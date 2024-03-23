@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomaticSignals", "AutomaticSignals\AutomaticSignals.csproj", "{47B7D6AE-793C-48A9-8616-1573ECF2F42A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{47B7D6AE-793C-48A9-8616-1573ECF2F42A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47B7D6AE-793C-48A9-8616-1573ECF2F42A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47B7D6AE-793C-48A9-8616-1573ECF2F42A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47B7D6AE-793C-48A9-8616-1573ECF2F42A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

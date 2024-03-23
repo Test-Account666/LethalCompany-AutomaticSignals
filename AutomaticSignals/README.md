@@ -12,6 +12,7 @@ What can it do?<br>
 - Deactivate turrets that suppose a threat<br>
 
 Don't worry. These features are somewhat balanced.<br>
+
 - Detected enemies may show up as "Enemy" or "Red Dot" instead of a proper name<br>
 - The teleport has a chance of just teleporting you to a random place inside the facility<br>
 - Blast doors also may close<br>

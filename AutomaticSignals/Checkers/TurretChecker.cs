@@ -1,14 +1,28 @@
 using System;
+using BepInEx.Configuration;
 using GameNetcodeStuff;
 
 namespace AutomaticSignals.Checkers;
 
+[InitializeConfig]
 public static class TurretChecker {
-    private const int MINIMUM_TURRET_COOL_DOWN = 10000;
-    private const int MAXIMUM_TURRET_COOL_DOWN = 20000;
-    private const int MALFUNCTION_CHANCE = 5;
+    private static ConfigEntry<int> _minimumTurretCoolDown = null!; // Default: 10000;
+    private static ConfigEntry<int> _maximumTurretCoolDown = null!; // Default: 20000;
+    private static ConfigEntry<int> _malfunctionChance = null!; // Default: 15;
     private static long _nextTurretDisable;
     private static readonly Random _Random = new();
+
+    public static void Initialize(ConfigFile configFile) {
+        _minimumTurretCoolDown = configFile.Bind("Turrets", "1. Minimum deactivate cooldown", 20000,
+            "Defines the minimum cooldown (in milliseconds) to wait before deactivating a turret again");
+
+        _maximumTurretCoolDown = configFile.Bind("Turrets", "2. Maximum deactivate cooldown", 40000,
+            "Defines the maximum cooldown (in milliseconds) to wait before deactivating a turret again");
+
+        _malfunctionChance = configFile.Bind("Turrets", "3. Malfunction Chance", 15,
+            new ConfigDescription("Defines the chance for deactivating a turret to fail",
+                new AcceptableValueRange<int>(0, 100)));
+    }
 
     public static void CheckTurrets(Turret turret, ref PlayerControllerB result) {
         var currentTime = UnixTime.GetCurrentTime();
@@ -29,11 +43,11 @@ public static class TurretChecker {
             return;
         }
 
-        _nextTurretDisable = _Random.Next(MINIMUM_TURRET_COOL_DOWN, MAXIMUM_TURRET_COOL_DOWN);
+        _nextTurretDisable = currentTime + _Random.Next(_minimumTurretCoolDown.Value, _maximumTurretCoolDown.Value);
 
         var malfunctionChance = _Random.Next(0, 100);
 
-        if (malfunctionChance <= MALFUNCTION_CHANCE)
+        if (malfunctionChance <= _malfunctionChance.Value)
             return;
 
         terminalAccessibleObject.CallFunctionFromTerminal();

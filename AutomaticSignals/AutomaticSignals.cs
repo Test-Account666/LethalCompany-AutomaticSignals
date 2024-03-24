@@ -1,4 +1,7 @@
-﻿using BepInEx;
+﻿using System;
+using System.Linq;
+using System.Reflection;
+using BepInEx;
 using BepInEx.Logging;
 using HarmonyLib;
 
@@ -13,6 +16,8 @@ public class AutomaticSignals : BaseUnityPlugin {
     private void Awake() {
         Logger = base.Logger;
         Instance = this;
+
+        InitializeConfig();
 
         Patch();
 
@@ -38,4 +43,19 @@ public class AutomaticSignals : BaseUnityPlugin {
 
         Logger.LogDebug("Finished unpatching!");
     }
+
+    public void InitializeConfig() {
+        var types = Assembly.GetExecutingAssembly().GetTypes();
+
+        var markedTypes = types.Where(Predicate);
+
+        foreach (var type in markedTypes) {
+            var initializeMethod = type.GetMethod("Initialize", BindingFlags.Static | BindingFlags.Public);
+
+            initializeMethod?.Invoke(null, [Config]);
+        }
+    }
+
+    private static bool Predicate(Type type) =>
+        type.GetCustomAttributes(typeof(InitializeConfigAttribute), false).Length > 0;
 }

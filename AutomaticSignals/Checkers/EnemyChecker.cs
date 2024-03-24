@@ -1,17 +1,34 @@
 using System.Linq;
+using BepInEx.Configuration;
 using GameNetcodeStuff;
 using UnityEngine;
 using Random = System.Random;
 
 namespace AutomaticSignals.Checkers;
 
+[InitializeConfig]
 public static class EnemyChecker {
-    private const int MINIMUM_MESSAGE_COOL_DOWN = 15000;
-    private const int MAXIMUM_MESSAGE_COOL_DOWN = 23000;
-    private const int MINIMUM_WARN_DISTANCE = 20;
-    private const int WARN_CHANCE = 45;
+    private static ConfigEntry<int> _minimumMessageCoolDown = null!; // Default: 15000;
+    private static ConfigEntry<int> _maximumMessageCoolDown = null!; // Default: 23000;
+    private static ConfigEntry<int> _minimumWarnDistance = null!; // Default: 20;
+    private static ConfigEntry<int> _warnChance = null!; // Default: 45;
     private static long _nextEnemyMessage;
     private static readonly Random _Random = new();
+
+    public static void Initialize(ConfigFile configFile) {
+        _minimumMessageCoolDown = configFile.Bind("Enemy Warning", "1. Minimum message cooldown", 15000,
+            "Defines the minimum cooldown (in milliseconds) to wait before warning about enemies");
+
+        _maximumMessageCoolDown = configFile.Bind("Enemy Warning", "2. Maximum message cooldown", 23000,
+            "Defines the maximum cooldown (in milliseconds) to wait before warning about enemies");
+
+        _minimumWarnDistance = configFile.Bind("Enemy Warning", "3. Minimum warn distance", 20,
+            "Defines the minimum distance the player needs to be to an enemy for a warning to be sent");
+
+        _warnChance = configFile.Bind("Enemy Warning", "4. Warn chance", 20,
+            new ConfigDescription("Defines the chance for a player to be warned",
+                new AcceptableValueRange<int>(0, 100)));
+    }
 
     internal static void CheckForEnemies(PlayerControllerB playerControllerB) {
         var currentTime = UnixTime.GetCurrentTime();
@@ -21,7 +38,7 @@ public static class EnemyChecker {
 
         var warnChance = _Random.Next(0, 100);
 
-        if (warnChance > WARN_CHANCE)
+        if (warnChance > _warnChance.Value)
             return;
 
         foreach (var spawnedEnemy in from spawnedEnemy in RoundManager.Instance.SpawnedEnemies
@@ -29,9 +46,10 @@ public static class EnemyChecker {
                  where spawnedEnemy.isOutside == !playerControllerB.isInsideFactory
                  where !ShouldIgnoreEnemy(spawnedEnemy.enemyType.enemyName)
                  let distance = Vector3.Distance(playerControllerB.transform.position, spawnedEnemy.transform.position)
-                 where distance <= MINIMUM_WARN_DISTANCE
+                 where distance <= _minimumWarnDistance.Value
                  select spawnedEnemy) {
-            _nextEnemyMessage = currentTime + _Random.Next(MINIMUM_MESSAGE_COOL_DOWN, MAXIMUM_MESSAGE_COOL_DOWN);
+            _nextEnemyMessage =
+                currentTime + _Random.Next(_minimumMessageCoolDown.Value, _maximumMessageCoolDown.Value);
 
             Transmitter.SendMessage(GetEnemyName(spawnedEnemy.enemyType.enemyName));
             break;

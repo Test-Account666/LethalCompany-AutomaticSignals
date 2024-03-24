@@ -1,3 +1,4 @@
+using BepInEx.Configuration;
 using GameNetcodeStuff;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
@@ -5,16 +6,34 @@ using Random = System.Random;
 
 namespace AutomaticSignals.Checkers;
 
+[InitializeConfig]
 public static class ShakeChecker {
-    private const int TELEPORT_COOL_DOWN = 30000;
-    private const float ROTATION_ACCUMULATION_THRESHOLD = 1600F;
-    private const int TELEPORT_CHANCE = 80;
+    private static ConfigEntry<int> _minimumTeleportCoolDown = null!; // Default: 24000;
+    private static ConfigEntry<int> _maximumTeleportCoolDown = null!; // Default: 30000;
+    private static ConfigEntry<int> _rotationAccumulationThreshold = null!; // Default: 1600F;
+    private static ConfigEntry<int> _teleportChance = null!; // Default: 80;
     private static Quaternion _previousRotation;
     private static float _accumulatedRotationDifference;
     private static readonly Random _Random = new();
     private static bool _initialized;
     private static PlayerControllerB? _playerControllerB;
     private static long _nextTeleport;
+
+    public static void Initialize(ConfigFile configFile) {
+        _minimumTeleportCoolDown = configFile.Bind("Panicking Player", "1. Minimum teleport cooldown", 24000,
+            "Defines the minimum cooldown (in milliseconds) to wait before an emergency teleport can occur");
+
+        _maximumTeleportCoolDown = configFile.Bind("Panicking Player", "2. Maximum teleport cooldown", 30000,
+            "Defines the maximum cooldown (in milliseconds) to wait before an emergency teleport can occur");
+
+        _rotationAccumulationThreshold = configFile.Bind("Panicking Player", "3. Rotation Accumulation Threshold", 1600,
+            "Defines the accumulated rotation threshold before an emergency teleportation is being registered (Lower Number = More sensitive, Higher Number = Less Sensitive)");
+
+        _teleportChance = configFile.Bind("Panicking Player", "4. Teleport Chance", 80,
+            new ConfigDescription(
+                "Defines the chance of being teleported back to the ship. If not met, will teleport player to a random position inside the facility",
+                new AcceptableValueRange<int>(0, 100)));
+    }
 
     public static void CheckForShaking(PlayerControllerB playerControllerB) {
         if (_playerControllerB is null || _playerControllerB != playerControllerB)
@@ -55,7 +74,7 @@ public static class ShakeChecker {
     }
 
     private static void CheckForTeleportation() {
-        if (!(_accumulatedRotationDifference >= ROTATION_ACCUMULATION_THRESHOLD))
+        if (!(_accumulatedRotationDifference >= _rotationAccumulationThreshold.Value))
             return;
 
         _accumulatedRotationDifference = 0f;
@@ -65,9 +84,9 @@ public static class ShakeChecker {
         if (_nextTeleport > currentTime)
             return;
 
-        _nextTeleport = currentTime + TELEPORT_COOL_DOWN;
+        _nextTeleport = currentTime + _Random.Next(_minimumTeleportCoolDown.Value, _maximumTeleportCoolDown.Value);
 
-        if (_Random.Next(0, 100) > TELEPORT_CHANCE) {
+        if (_Random.Next(0, 100) > _teleportChance.Value) {
             TeleportMalfunction();
             return;
         }

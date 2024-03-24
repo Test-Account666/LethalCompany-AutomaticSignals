@@ -1,8 +1,6 @@
-using System;
 using GameNetcodeStuff;
 using UnityEngine;
 using Debug = System.Diagnostics.Debug;
-using Object = UnityEngine.Object;
 using Random = System.Random;
 
 namespace AutomaticSignals.Checkers;
@@ -19,15 +17,6 @@ public static class ShakeChecker {
     private static long _nextTeleport;
 
     public static void CheckForShaking(PlayerControllerB playerControllerB) {
-        if (StartOfRound.Instance is null)
-            return;
-
-        if (StartOfRound.Instance.localPlayerController is null)
-            return;
-
-        if (playerControllerB.actualClientId != StartOfRound.Instance.localPlayerController.playerClientId)
-            return;
-
         if (_playerControllerB is null || _playerControllerB != playerControllerB)
             _playerControllerB = playerControllerB;
 
@@ -83,44 +72,37 @@ public static class ShakeChecker {
             return;
         }
 
-        TeleportPlayer();
+        Debug.Assert(_playerControllerB != null, nameof(_playerControllerB) + " != null");
+        Teleporter.TeleportPlayer(_playerControllerB);
     }
 
     private static void TeleportMalfunction() {
         if (RoundManager.Instance.insideAINodes.Length <= 0)
             return;
 
-        var teleporterList = Object.FindObjectsOfType<ShipTeleporter>();
+        var position = GetRandomTeleportPosition();
 
-        foreach (var teleporter in teleporterList) {
-            if (!teleporter.isInverseTeleporter)
-                continue;
+        if (position is null)
+            return;
 
-            var position2 = RoundManager.Instance
-                .insideAINodes[teleporter.shipTeleporterSeed.Next(0, RoundManager.Instance.insideAINodes.Length)]
-                .transform.position;
-
-            var inBoxPredictable =
-                RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(position2,
-                    randomSeed: teleporter.shipTeleporterSeed);
-
-            Debug.Assert(_playerControllerB != null, nameof(_playerControllerB) + " != null");
-            teleporter.TeleportPlayerOutWithInverseTeleporter((int)_playerControllerB.playerClientId, inBoxPredictable);
-            teleporter.TeleportPlayerOutServerRpc((int)_playerControllerB.playerClientId, inBoxPredictable);
-        }
+        Debug.Assert(_playerControllerB != null, nameof(_playerControllerB) + " != null");
+        Teleporter.TeleportPlayerToLocation(_playerControllerB, position.Value);
     }
 
-    private static void TeleportPlayer() {
-        var teleporterList = Object.FindObjectsOfType<ShipTeleporter>();
+    private static Vector3? GetRandomTeleportPosition() {
+        var teleporterSeed = Teleporter.GetTeleporterSeed();
 
-        foreach (var teleporter in teleporterList) {
-            if (teleporter.isInverseTeleporter)
-                continue;
+        if (teleporterSeed == null)
+            return null;
 
-            Debug.Assert(_playerControllerB != null, nameof(_playerControllerB) + " != null");
-            StartOfRound.Instance.mapScreen.SwitchRadarTargetAndSync((int)_playerControllerB.playerClientId);
-            teleporter.PressTeleportButtonServerRpc();
-            return;
-        }
+        var position2 = RoundManager.Instance
+            .insideAINodes[teleporterSeed.Next(0, RoundManager.Instance.insideAINodes.Length)]
+            .transform.position;
+
+        var inBoxPredictable =
+            RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(position2,
+                randomSeed: teleporterSeed);
+
+        return inBoxPredictable;
     }
 }

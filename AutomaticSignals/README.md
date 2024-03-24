@@ -10,6 +10,7 @@ What can it do?<br>
 - Teleport you, if you spin or shake your camera<br>
 - Open blast doors for you<br>
 - Deactivate turrets that suppose a threat<br>
+- Teleport you when you're being eaten by a giant<br>
 
 Don't worry. These features are somewhat balanced.<br>
 
@@ -17,5 +18,6 @@ Don't worry. These features are somewhat balanced.<br>
 - The teleport has a chance of just teleporting you to a random place inside the facility<br>
 - Blast doors also may close<br>
 - Deactivating may fail, resulting in you being filled with lead<br>
+- Has a chance of failing or waiting too long<br>
 <br>
 - All actions have big cool downs<br>

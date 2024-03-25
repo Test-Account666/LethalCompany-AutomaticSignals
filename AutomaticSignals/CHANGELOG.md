@@ -1,5 +1,8 @@
 # Automatic Signals Mod
 
+## 1.1.2<br>
+\* Fixed everything working without signal translator, except for enemy warnings<br>
+
 ## 1.1.1<br>
 \* Fixed README and changelog<br>
 \# No actual code changes<br>

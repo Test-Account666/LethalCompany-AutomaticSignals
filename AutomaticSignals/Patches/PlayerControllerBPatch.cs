@@ -18,6 +18,9 @@ public static class PlayerControllerBPatch {
         if (__instance.playerClientId != StartOfRound.Instance.localPlayerController.playerClientId)
             return;
 
+        if (!Transmitter.IsSignalTranslatorUnlocked())
+            return;
+
         EnemyChecker.CheckForEnemies(__instance);
         ShakeChecker.CheckForShaking(__instance);
         BigDoorChecker.CheckForBigDoor(__instance);

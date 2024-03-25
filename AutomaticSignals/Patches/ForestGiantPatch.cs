@@ -17,6 +17,9 @@ public class ForestGiantPatch {
 
         if (playerBeingEaten.actualClientId != StartOfRound.Instance.localPlayerController.playerClientId)
             return;
+        
+        if (!Transmitter.IsSignalTranslatorUnlocked())
+            return;
 
         GiantChecker.EatingProcessStart();
     }

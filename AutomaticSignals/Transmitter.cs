@@ -6,7 +6,7 @@ using Object = UnityEngine.Object;
 namespace AutomaticSignals;
 
 public static class Transmitter {
-    private static bool CanSendMessage() {
+    public static bool IsSignalTranslatorUnlocked() {
         return StartOfRound.Instance.unlockablesList.unlockables
             .Where(unlockableItem => !unlockableItem.alreadyUnlocked)
             .Where(unlockableItem => unlockableItem.hasBeenUnlockedByPlayer).Any(unlockableItem =>
@@ -14,9 +14,6 @@ public static class Transmitter {
     }
 
     public static void SendMessage(string message) {
-        if (!CanSendMessage())
-            return;
-
         var hudManager = HUDManager.Instance;
 
         var signalTranslator = Object.FindObjectOfType<SignalTranslator>();

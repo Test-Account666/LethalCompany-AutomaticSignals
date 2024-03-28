@@ -12,6 +12,8 @@ public static class ShakeChecker {
     private static ConfigEntry<int> _maximumTeleportCoolDown = null!; // Default: 30000;
     private static ConfigEntry<int> _rotationAccumulationThreshold = null!; // Default: 1600F;
     private static ConfigEntry<int> _teleportChance = null!; // Default: 80;
+    private static ConfigEntry<bool> _teleportEnabled = null!; // Default: true;
+    private static ConfigEntry<bool> _malfunctionTeleportEnabled = null!; // Default: true;
     private static Quaternion _previousRotation;
     private static float _accumulatedRotationDifference;
     private static readonly Random _Random = new();
@@ -33,9 +35,18 @@ public static class ShakeChecker {
             new ConfigDescription(
                 "Defines the chance of being teleported back to the ship. If not met, will teleport player to a random position inside the facility",
                 new AcceptableValueRange<int>(0, 100)));
+
+        _teleportEnabled = configFile.Bind("Panicking Player", "5. Teleport Enabled", true,
+            "If true, will enable the emergency teleport");
+
+        _malfunctionTeleportEnabled = configFile.Bind("Panicking Player", "6. Malfunction Teleport Enabled", true,
+            "If true, will enable the malfunctional emergency teleport (Requires emergency teleport)");
     }
 
     public static void CheckForShaking(PlayerControllerB playerControllerB) {
+        if (!_teleportEnabled.Value)
+            return;
+
         if (_playerControllerB is null || _playerControllerB != playerControllerB)
             _playerControllerB = playerControllerB;
 
@@ -96,6 +107,9 @@ public static class ShakeChecker {
     }
 
     private static void TeleportMalfunction() {
+        if (!_malfunctionTeleportEnabled.Value)
+            return;
+        
         if (RoundManager.Instance.insideAINodes.Length <= 0)
             return;
 

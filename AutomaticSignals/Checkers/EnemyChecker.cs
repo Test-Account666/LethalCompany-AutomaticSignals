@@ -41,7 +41,7 @@ public static class EnemyChecker {
         if (warnChance > _warnChance.Value)
             return;
 
-        foreach (var spawnedEnemy in from spawnedEnemy in RoundManager.Instance.SpawnedEnemies
+        foreach (var spawnedEnemy in from spawnedEnemy in Object.FindObjectsOfType<EnemyAI>()
                  where !spawnedEnemy.isEnemyDead
                  where spawnedEnemy.isOutside == !playerControllerB.isInsideFactory
                  where !ShouldIgnoreEnemy(spawnedEnemy.enemyType.enemyName)

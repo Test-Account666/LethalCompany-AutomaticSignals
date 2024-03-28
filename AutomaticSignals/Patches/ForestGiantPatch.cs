@@ -15,7 +15,7 @@ public class ForestGiantPatch {
         if (StartOfRound.Instance.localPlayerController is null)
             return;
 
-        if (playerBeingEaten.actualClientId != StartOfRound.Instance.localPlayerController.playerClientId)
+        if (playerBeingEaten.playerClientId != StartOfRound.Instance.localPlayerController.playerClientId)
             return;
         
         if (!Transmitter.IsSignalTranslatorUnlocked())

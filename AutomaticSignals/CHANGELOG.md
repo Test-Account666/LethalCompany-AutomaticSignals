@@ -1,6 +1,7 @@
 # Automatic Signals Mod
 
 ## 1.1.3<br>
+\+ Added more config options to emergency teleport<br>
 \* Fixed enemy warnings for non-hosts<br>
 \* Fixed teleporting multiple or wrong person (Teleportation is now client-side though...)<br>
 

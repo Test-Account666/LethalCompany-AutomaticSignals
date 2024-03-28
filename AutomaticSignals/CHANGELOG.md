@@ -1,5 +1,9 @@
 # Automatic Signals Mod
 
+## 1.1.3<br>
+\* Fixed enemy warnings for non-hosts<br>
+\* Fixed teleporting multiple or wrong person (Teleportation is now client-side though...)<br>
+
 ## 1.1.2<br>
 \* Fixed everything working without signal translator, except for enemy warnings<br>
 

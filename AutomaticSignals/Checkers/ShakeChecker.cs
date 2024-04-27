@@ -1,3 +1,4 @@
+using System.Linq;
 using BepInEx.Configuration;
 using GameNetcodeStuff;
 using UnityEngine;
@@ -14,6 +15,7 @@ public static class ShakeChecker {
     private static ConfigEntry<int> _teleportChance = null!; // Default: 80;
     private static ConfigEntry<bool> _teleportEnabled = null!; // Default: true;
     private static ConfigEntry<bool> _malfunctionTeleportEnabled = null!; // Default: true;
+    private static ConfigEntry<int> _maximumPeopleAlive = null!; // Default: true;
     private static Quaternion _previousRotation;
     private static float _accumulatedRotationDifference;
     private static readonly Random _Random = new();
@@ -41,6 +43,9 @@ public static class ShakeChecker {
 
         _malfunctionTeleportEnabled = configFile.Bind("Panicking Player", "6. Malfunction Teleport Enabled", true,
                                                       "If true, will enable the malfunctional emergency teleport (Requires emergency teleport)");
+
+        _maximumPeopleAlive = configFile.Bind("Panicking Player", "7. Maximum people alive", 1,
+                                              "Defines how many people can be alive to enable the emergency teleport");
     }
 
     public static void CheckForShaking(PlayerControllerB playerControllerB) {
@@ -96,6 +101,19 @@ public static class ShakeChecker {
             return;
 
         _nextTeleport = currentTime + _Random.Next(_minimumTeleportCoolDown.Value, _maximumTeleportCoolDown.Value);
+
+        var peopleAlive = StartOfRound.Instance.allPlayerScripts.Select(player => {
+            if (player is null)
+                return false;
+
+            if (!player.isPlayerControlled)
+                return false;
+
+            return !player.isPlayerDead;
+        }).Count();
+
+        if (peopleAlive > _maximumPeopleAlive.Value)
+            return;
 
         if (_Random.Next(1, 101) > _teleportChance.Value) {
             TeleportMalfunction();

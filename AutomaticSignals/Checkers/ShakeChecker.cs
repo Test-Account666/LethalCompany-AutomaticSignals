@@ -102,7 +102,7 @@ public static class ShakeChecker {
 
         _nextTeleport = currentTime + _Random.Next(_minimumTeleportCoolDown.Value, _maximumTeleportCoolDown.Value);
 
-        var peopleAlive = StartOfRound.Instance.allPlayerScripts.Select(player => {
+        var peopleAlive = StartOfRound.Instance.allPlayerScripts.Where(player => {
             if (player is null)
                 return false;
 

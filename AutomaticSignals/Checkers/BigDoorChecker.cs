@@ -17,18 +17,19 @@ public static class BigDoorChecker {
 
     public static void Initialize(ConfigFile configFile) {
         _minimumDoorCoolDown = configFile.Bind("Blast Doors", "1. Minimum cooldown", 15000,
-            "Defines the minimum cooldown (in milliseconds) to wait before opening/closing a blast door");
+                                               "Defines the minimum cooldown (in milliseconds) to wait before opening/closing a blast door");
 
         _maximumDoorCoolDown = configFile.Bind("Blast Doors", "2. Maximum cooldown", 23000,
-            "Defines the maximum cooldown (in milliseconds) to wait before opening/closing a blast door");
+                                               "Defines the maximum cooldown (in milliseconds) to wait before opening/closing a blast door");
 
         _openChance = configFile.Bind("Blast Doors", "3. Open chance", 40,
-            new ConfigDescription("Defines the chance a blast door will open, if looked at",
-                new AcceptableValueRange<int>(0, 100)));
+                                      new ConfigDescription("Defines the chance a blast door will open, if looked at",
+                                                            new AcceptableValueRange<int>(0, 100)));
 
         _malfunctionChance = configFile.Bind("Blast Doors", "4. Malfunction chance", 15,
-            new ConfigDescription("Defines the chance a blast door will close, if looked at",
-                new AcceptableValueRange<int>(0, 100)));
+                                             new ConfigDescription(
+                                                 "Defines the chance a blast door will close, if looked at",
+                                                 new AcceptableValueRange<int>(0, 100)));
     }
 
     public static void CheckForBigDoor(PlayerControllerB playerControllerB) {
@@ -48,7 +49,7 @@ public static class BigDoorChecker {
         _nextDoorOpen = currentTime + _Random.Next(_minimumDoorCoolDown.Value, _maximumDoorCoolDown.Value);
 
         OpenOrMalfunctionDoor(accessibleObject,
-            accessibleObject.isDoorOpen ? _malfunctionChance.Value : _openChance.Value);
+                              accessibleObject.isDoorOpen? _malfunctionChance.Value : _openChance.Value);
     }
 
     private static TerminalAccessibleObject? GetBigDoor(Ray ray, float maxDistance) {
@@ -66,7 +67,7 @@ public static class BigDoorChecker {
     }
 
     private static void OpenOrMalfunctionDoor(TerminalAccessibleObject accessibleObject, int chance) {
-        var generatedChance = _Random.Next(0, 100);
+        var generatedChance = _Random.Next(1, 101);
 
         if (generatedChance > chance)
             return;

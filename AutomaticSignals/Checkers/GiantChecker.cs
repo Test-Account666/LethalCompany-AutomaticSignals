@@ -18,20 +18,21 @@ public static class GiantChecker {
 
     public static void Initialize(ConfigFile configFile) {
         _minimumTeleportCoolDown = configFile.Bind("Giants", "1. Minimum teleport cooldown", 1000,
-            "Defines the minimum cooldown (in milliseconds) to wait before teleporting a player that is being eaten");
+                                                   "Defines the minimum cooldown (in milliseconds) to wait before teleporting a player that is being eaten");
 
         _maximumTeleportCoolDown = configFile.Bind("Giants", "2. Maximum teleport cooldown", 20000,
-            "Defines the maximum cooldown (in milliseconds) to wait before teleporting a player that is being eaten");
+                                                   "Defines the maximum cooldown (in milliseconds) to wait before teleporting a player that is being eaten");
 
         _minimumTimeWaiting = configFile.Bind("Giants", "3. Minimum teleport delay", 1000,
-            "Defines the minimum delay (in milliseconds) to wait before actually trying to teleport a player that is being eaten");
+                                              "Defines the minimum delay (in milliseconds) to wait before actually trying to teleport a player that is being eaten");
 
         _maximumTimeWaiting = configFile.Bind("Giants", "4. Maximum teleport delay", 2600,
-            "Defines the maximum delay (in milliseconds) to wait before actually trying to teleport a player that is being eaten");
+                                              "Defines the maximum delay (in milliseconds) to wait before actually trying to teleport a player that is being eaten");
 
         _teleportChance = configFile.Bind("Giants", "5. Teleport chance", 70,
-            new ConfigDescription("Defines the chance for teleporting a player that is being eaten",
-                new AcceptableValueRange<int>(0, 100)));
+                                          new ConfigDescription(
+                                              "Defines the chance for teleporting a player that is being eaten",
+                                              new AcceptableValueRange<int>(0, 100)));
     }
 
     public static void Update(PlayerControllerB playerControllerB) {
@@ -55,7 +56,7 @@ public static class GiantChecker {
 
         _nextTeleport = currentTime + _Random.Next(_minimumTeleportCoolDown.Value, _maximumTeleportCoolDown.Value);
 
-        var teleportChance = _Random.Next(0, 100);
+        var teleportChance = _Random.Next(1, 101);
 
         if (teleportChance > _teleportChance.Value)
             return;

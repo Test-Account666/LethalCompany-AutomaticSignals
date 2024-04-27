@@ -8,6 +8,7 @@ namespace AutomaticSignals.Patches;
 public static class PlayerControllerBPatch {
     [HarmonyPatch("Update")]
     [HarmonyPostfix]
+    // ReSharper disable once InconsistentNaming
     public static void AfterUpdate(PlayerControllerB __instance) {
         if (StartOfRound.Instance is null)
             return;

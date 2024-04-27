@@ -52,7 +52,9 @@ public class AutomaticSignals : BaseUnityPlugin {
         foreach (var type in markedTypes) {
             var initializeMethod = type.GetMethod("Initialize", BindingFlags.Static | BindingFlags.Public);
 
-            initializeMethod?.Invoke(null, [Config]);
+            initializeMethod?.Invoke(null, [
+                Config,
+            ]);
         }
     }
 

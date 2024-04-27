@@ -6,12 +6,10 @@ using Object = UnityEngine.Object;
 namespace AutomaticSignals;
 
 public static class Transmitter {
-    public static bool IsSignalTranslatorUnlocked() {
-        return StartOfRound.Instance.unlockablesList.unlockables
-            .Where(unlockableItem => !unlockableItem.alreadyUnlocked)
-            .Where(unlockableItem => unlockableItem.hasBeenUnlockedByPlayer).Any(unlockableItem =>
-                unlockableItem.unlockableName.ToLower().Contains("translator"));
-    }
+    public static bool IsSignalTranslatorUnlocked() =>
+        StartOfRound.Instance.unlockablesList.unlockables.Where(unlockableItem => !unlockableItem.alreadyUnlocked)
+                    .Where(unlockableItem => unlockableItem.hasBeenUnlockedByPlayer)
+                    .Any(unlockableItem => unlockableItem.unlockableName.ToLower().Contains("translator"));
 
     public static void SendMessage(string message) {
         var hudManager = HUDManager.Instance;

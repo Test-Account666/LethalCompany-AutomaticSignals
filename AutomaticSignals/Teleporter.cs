@@ -10,6 +10,7 @@ public static class Teleporter {
     internal static void TeleportPlayer(PlayerControllerB playerControllerB) {
         var teleporter = GetTeleporter(false);
 
+        // ReSharper disable once UseNullPropagation
         if (teleporter is null)
             return;
 
@@ -22,14 +23,14 @@ public static class Teleporter {
         if (teleporter is null)
             return;
 
-        teleporter.TeleportPlayerOutWithInverseTeleporter((int)playerControllerB.playerClientId, position);
-        teleporter.TeleportPlayerOutServerRpc((int)playerControllerB.playerClientId, position);
+        teleporter.TeleportPlayerOutWithInverseTeleporter((int) playerControllerB.playerClientId, position);
+        teleporter.TeleportPlayerOutServerRpc((int) playerControllerB.playerClientId, position);
     }
 
     internal static Random? GetTeleporterSeed() {
         var teleporter = GetTeleporter(true);
 
-        return teleporter == null ? null : teleporter.shipTeleporterSeed;
+        return teleporter == null? null : teleporter.shipTeleporterSeed;
     }
 
     private static ShipTeleporter? GetTeleporter(bool inverseTeleporter) {
@@ -68,8 +69,7 @@ public static class Teleporter {
 
         // ReSharper disable once UseNullPropagation
         if (audioReverbPresets is not null)
-            audioReverbPresets.audioPresets[3]
-                .ChangeAudioReverbForPlayer(playerToTeleport);
+            audioReverbPresets.audioPresets[3].ChangeAudioReverbForPlayer(playerToTeleport);
 
         playerToTeleport.isInElevator = true;
         playerToTeleport.isInHangarShipRoom = true;

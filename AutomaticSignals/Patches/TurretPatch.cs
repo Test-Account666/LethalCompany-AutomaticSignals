@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AutomaticSignals.Checkers;
 using GameNetcodeStuff;
 using HarmonyLib;
@@ -8,6 +9,7 @@ namespace AutomaticSignals.Patches;
 public static class TurretPatch {
     [HarmonyPatch("CheckForPlayersInLineOfSight")]
     [HarmonyPostfix]
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static void AfterCheckForPlayersInLineOfSight(Turret __instance, ref PlayerControllerB __result) {
         if (!Transmitter.IsSignalTranslatorUnlocked())
             return;

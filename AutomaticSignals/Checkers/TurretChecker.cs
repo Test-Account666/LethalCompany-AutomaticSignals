@@ -6,22 +6,23 @@ namespace AutomaticSignals.Checkers;
 
 [InitializeConfig]
 public static class TurretChecker {
-    private static ConfigEntry<int> _minimumTurretCoolDown = null!; // Default: 10000;
-    private static ConfigEntry<int> _maximumTurretCoolDown = null!; // Default: 20000;
+    private static ConfigEntry<int> _minimumTurretCoolDown = null!; // Default: 20000;
+    private static ConfigEntry<int> _maximumTurretCoolDown = null!; // Default: 40000;
     private static ConfigEntry<int> _malfunctionChance = null!; // Default: 15;
     private static long _nextTurretDisable;
     private static readonly Random _Random = new();
 
     public static void Initialize(ConfigFile configFile) {
         _minimumTurretCoolDown = configFile.Bind("Turrets", "1. Minimum deactivate cooldown", 20000,
-            "Defines the minimum cooldown (in milliseconds) to wait before deactivating a turret again");
+                                                 "Defines the minimum cooldown (in milliseconds) to wait before deactivating a turret again");
 
         _maximumTurretCoolDown = configFile.Bind("Turrets", "2. Maximum deactivate cooldown", 40000,
-            "Defines the maximum cooldown (in milliseconds) to wait before deactivating a turret again");
+                                                 "Defines the maximum cooldown (in milliseconds) to wait before deactivating a turret again");
 
         _malfunctionChance = configFile.Bind("Turrets", "3. Malfunction Chance", 15,
-            new ConfigDescription("Defines the chance for deactivating a turret to fail",
-                new AcceptableValueRange<int>(0, 100)));
+                                             new ConfigDescription(
+                                                 "Defines the chance for deactivating a turret to fail",
+                                                 new AcceptableValueRange<int>(0, 100)));
     }
 
     public static void CheckTurrets(Turret turret, ref PlayerControllerB result) {
@@ -45,7 +46,7 @@ public static class TurretChecker {
 
         _nextTurretDisable = currentTime + _Random.Next(_minimumTurretCoolDown.Value, _maximumTurretCoolDown.Value);
 
-        var malfunctionChance = _Random.Next(0, 100);
+        var malfunctionChance = _Random.Next(1, 101);
 
         if (malfunctionChance <= _malfunctionChance.Value)
             return;

@@ -23,24 +23,24 @@ public static class ShakeChecker {
 
     public static void Initialize(ConfigFile configFile) {
         _minimumTeleportCoolDown = configFile.Bind("Panicking Player", "1. Minimum teleport cooldown", 24000,
-            "Defines the minimum cooldown (in milliseconds) to wait before an emergency teleport can occur");
+                                                   "Defines the minimum cooldown (in milliseconds) to wait before an emergency teleport can occur");
 
         _maximumTeleportCoolDown = configFile.Bind("Panicking Player", "2. Maximum teleport cooldown", 30000,
-            "Defines the maximum cooldown (in milliseconds) to wait before an emergency teleport can occur");
+                                                   "Defines the maximum cooldown (in milliseconds) to wait before an emergency teleport can occur");
 
         _rotationAccumulationThreshold = configFile.Bind("Panicking Player", "3. Rotation Accumulation Threshold", 1600,
-            "Defines the accumulated rotation threshold before an emergency teleportation is being registered (Lower Number = More sensitive, Higher Number = Less Sensitive)");
+                                                         "Defines the accumulated rotation threshold before an emergency teleportation is being registered (Lower Number = More sensitive, Higher Number = Less Sensitive)");
 
         _teleportChance = configFile.Bind("Panicking Player", "4. Teleport Chance", 80,
-            new ConfigDescription(
-                "Defines the chance of being teleported back to the ship. If not met, will teleport player to a random position inside the facility",
-                new AcceptableValueRange<int>(0, 100)));
+                                          new ConfigDescription(
+                                              "Defines the chance of being teleported back to the ship. If not met, will teleport player to a random position inside the facility",
+                                              new AcceptableValueRange<int>(0, 100)));
 
         _teleportEnabled = configFile.Bind("Panicking Player", "5. Teleport Enabled", true,
-            "If true, will enable the emergency teleport");
+                                           "If true, will enable the emergency teleport");
 
         _malfunctionTeleportEnabled = configFile.Bind("Panicking Player", "6. Malfunction Teleport Enabled", true,
-            "If true, will enable the malfunctional emergency teleport (Requires emergency teleport)");
+                                                      "If true, will enable the malfunctional emergency teleport (Requires emergency teleport)");
     }
 
     public static void CheckForShaking(PlayerControllerB playerControllerB) {
@@ -97,7 +97,7 @@ public static class ShakeChecker {
 
         _nextTeleport = currentTime + _Random.Next(_minimumTeleportCoolDown.Value, _maximumTeleportCoolDown.Value);
 
-        if (_Random.Next(0, 100) > _teleportChance.Value) {
+        if (_Random.Next(1, 101) > _teleportChance.Value) {
             TeleportMalfunction();
             return;
         }
@@ -109,7 +109,7 @@ public static class ShakeChecker {
     private static void TeleportMalfunction() {
         if (!_malfunctionTeleportEnabled.Value)
             return;
-        
+
         if (RoundManager.Instance.insideAINodes.Length <= 0)
             return;
 
@@ -129,12 +129,12 @@ public static class ShakeChecker {
             return null;
 
         var position2 = RoundManager.Instance
-            .insideAINodes[teleporterSeed.Next(0, RoundManager.Instance.insideAINodes.Length)]
-            .transform.position;
+                                    .insideAINodes[teleporterSeed.Next(0, RoundManager.Instance.insideAINodes.Length)]
+                                    .transform.position;
 
         var inBoxPredictable =
             RoundManager.Instance.GetRandomNavMeshPositionInBoxPredictable(position2,
-                randomSeed: teleporterSeed);
+                                                                           randomSeed: teleporterSeed);
 
         return inBoxPredictable;
     }

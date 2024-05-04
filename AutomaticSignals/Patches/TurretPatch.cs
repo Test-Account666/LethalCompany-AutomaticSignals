@@ -7,7 +7,7 @@ namespace AutomaticSignals.Patches;
 
 [HarmonyPatch(typeof(Turret))]
 public static class TurretPatch {
-    [HarmonyPatch("CheckForPlayersInLineOfSight")]
+    [HarmonyPatch(nameof(Turret.CheckForPlayersInLineOfSight))]
     [HarmonyPostfix]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public static void AfterCheckForPlayersInLineOfSight(Turret __instance, ref PlayerControllerB __result) {

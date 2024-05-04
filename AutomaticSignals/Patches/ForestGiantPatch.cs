@@ -6,7 +6,7 @@ namespace AutomaticSignals.Patches;
 
 [HarmonyPatch(typeof(ForestGiantAI))]
 public class ForestGiantPatch {
-    [HarmonyPatch("BeginEatPlayer")]
+    [HarmonyPatch(nameof(ForestGiantAI.BeginEatPlayer))]
     [HarmonyPostfix]
     public static void AfterBeginEatPlayer(PlayerControllerB playerBeingEaten) {
         if (StartOfRound.Instance is null)

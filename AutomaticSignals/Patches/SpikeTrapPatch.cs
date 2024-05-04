@@ -13,6 +13,9 @@ public static class SpikeTrapPatch {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     // ReSharper disable once SuggestBaseTypeForParameter
     private static bool OnTriggerStayPrefix(SpikeRoofTrap __instance, Collider other) {
+        if (!Transmitter.IsSignalTranslatorUnlocked())
+            return true;
+
         if (__instance && (__instance is not ({
                 trapActive: true,
             } or {
@@ -30,6 +33,12 @@ public static class SpikeTrapPatch {
         if (localPlayer is null || player != localPlayer)
             return true;
 
-        return !SpikeTrapChecker.CheckSpikeTraps(__instance, player);
+        var cancel = SpikeTrapChecker.CheckSpikeTraps(__instance, player);
+
+        if (!cancel)
+            return true;
+
+        __instance.slammingDown = false;
+        return false;
     }
 }

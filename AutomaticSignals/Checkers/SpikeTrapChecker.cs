@@ -1,6 +1,8 @@
-using System;
+using System.Collections;
 using BepInEx.Configuration;
 using GameNetcodeStuff;
+using UnityEngine;
+using Random = System.Random;
 
 namespace AutomaticSignals.Checkers;
 
@@ -11,6 +13,7 @@ public static class SpikeTrapChecker {
     private static ConfigEntry<int> _malfunctionChance = null!; // Default: 20;
     private static long _nextSpikeTrapDisable;
     private static readonly Random _Random = new();
+    private static readonly int _Slamming = Animator.StringToHash("Slamming");
 
     public static void Initialize(ConfigFile configFile) {
         _minimumSpikeTrapCoolDown = configFile.Bind("SpikeTraps", "1. Minimum deactivate cooldown", 40000,
@@ -36,7 +39,11 @@ public static class SpikeTrapChecker {
         if (result.playerClientId != StartOfRound.Instance.localPlayerController.playerClientId)
             return false;
 
-        var terminalAccessibleObject = spikeRoofTrap.GetComponent<TerminalAccessibleObject>();
+        // The reason why we want the parent's parent is the fact that the `TerminalAccessibleObject` isn't attached to the SpikeRoofTrap GameObject, since it is only a Trigger.
+        var spikeRoofTrapHazard = spikeRoofTrap.transform.parent.parent;
+
+        var terminalAccessibleObject = spikeRoofTrapHazard.Find("TerminalObjectContainer")
+                                                          .GetComponent<TerminalAccessibleObject>();
 
         if (terminalAccessibleObject is null) {
             AutomaticSignals.Logger.LogFatal("No TerminalAccessibleObject assigned to spikeRoofTrap!");
@@ -51,6 +58,15 @@ public static class SpikeTrapChecker {
             return false;
 
         terminalAccessibleObject.CallFunctionFromTerminal();
+
+        Transmitter.SendMessage("Evil Spike");
+
+        if (spikeRoofTrap.slamCoroutine is null)
+            return true;
+
+        spikeRoofTrap.StopCoroutine(spikeRoofTrap.slamCoroutine);
+
+        spikeRoofTrap.spikeTrapAnimator.SetBool(_Slamming, false);
         return true;
     }
 }

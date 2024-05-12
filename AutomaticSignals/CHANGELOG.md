@@ -1,5 +1,9 @@
 # Automatic Signals Mod
 
+## 1.3.0<br>
+
+\+ Added emergency teleport, if an Old Bird picks you up
+
 ## 1.2.0<br>
 
 \+ Added more config options for enemy warning<br>

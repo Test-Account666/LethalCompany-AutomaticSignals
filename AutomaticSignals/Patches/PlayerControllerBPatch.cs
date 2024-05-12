@@ -26,5 +26,6 @@ public static class PlayerControllerBPatch {
         ShakeChecker.CheckForShaking(__instance);
         BigDoorChecker.CheckForBigDoor(__instance);
         GiantChecker.Update(__instance);
+        RadMechChecker.Update(__instance);
     }
 }

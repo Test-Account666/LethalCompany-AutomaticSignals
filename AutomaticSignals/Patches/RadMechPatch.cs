@@ -7,8 +7,8 @@ namespace AutomaticSignals.Patches;
 [HarmonyPatch(typeof(RadMechAI))]
 public static class RadMechPatch {
     [HarmonyPatch(nameof(RadMechAI.BeginTorchPlayer))]
-    [HarmonyPostfix]
-    private static void BeginTorchPlayerPostfix(PlayerControllerB playerBeingTorched) {
+    [HarmonyPrefix]
+    private static void BeginTorchPlayerPrefix(PlayerControllerB playerBeingTorched) {
         if (StartOfRound.Instance is null)
             return;
 
@@ -21,6 +21,6 @@ public static class RadMechPatch {
         if (!Transmitter.IsSignalTranslatorUnlocked())
             return;
 
-        GiantChecker.EatingProcessStart();
+        RadMechChecker.TorchingProcessStart();
     }
 }

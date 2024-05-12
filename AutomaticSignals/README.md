@@ -11,6 +11,7 @@ What can it do?<br>
 - Open blast doors for you<br>
 - Deactivate turrets that suppose a threat<br>
 - Teleport you when you're being eaten by a giant<br>
+- Teleport you when you're being torched by an old bird<br>
 
 Don't worry. These features are somewhat balanced.<br>
 

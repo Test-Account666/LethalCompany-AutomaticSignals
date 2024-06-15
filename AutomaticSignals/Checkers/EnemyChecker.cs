@@ -80,10 +80,14 @@ public static class EnemyChecker {
             var _ => false,
         };
 
-    private static string GetEnemyName(string enemyName) {
+    private static string GetEnemyName(string? enemyName) {
+        if (enemyName is null) return "";
+
         var geniusChance = _Random.Next(1, 101);
         var idiotChance = _Random.Next(1, 101);
         var colorBlindChance = _Random.Next(1, 101);
+
+        AutomaticSignals.Logger.LogFatal("Name: " + enemyName);
 
         return IsIdiotOrDressGirl(geniusChance, enemyName)
             ? GetIdiotName(idiotChance, colorBlindChance)
@@ -115,8 +119,12 @@ public static class EnemyChecker {
             "puffer" => "Lizard",
             "baboon hawk" => "Bird",
             "hoarding bug" => GetLootBugName(),
+            "butler" => GetButlerName(),
             var _ => enemyName,
         };
+
+    private static string GetButlerName() =>
+        _Random.Next(1, 101) > 5? "Butler" : "Buttler";
 
     private static string GetFlowermanName() =>
         _Random.Next(1, 101) > 7  ? "Bracken" :

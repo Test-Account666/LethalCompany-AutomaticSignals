@@ -11,9 +11,9 @@ public static class EnemyChecker {
     private static ConfigEntry<int> _minimumMessageCoolDown = null!; // Default: 15000;
     private static ConfigEntry<int> _maximumMessageCoolDown = null!; // Default: 23000;
     private static ConfigEntry<int> _minimumWarnDistance = null!; // Default: 20;
-    private static ConfigEntry<int> _warnChance = null!; // Default: 45;
+    private static ConfigEntry<int> _warnChance = null!; // Default: 20;
     private static ConfigEntry<int> _nameEnemyChance = null!; // Default: 15;
-    private static ConfigEntry<int> _idiotChance = null!; // Default: 30;
+    private static ConfigEntry<int> _idiotChance = null!; // Default: 15;
     private static ConfigEntry<int> _colorblindChance = null!; // Default: 3;
     private static long _nextEnemyMessage;
     private static readonly Random _Random = new();
@@ -57,15 +57,14 @@ public static class EnemyChecker {
             return;
 
         foreach (var spawnedEnemy in from spawnedEnemy in Object.FindObjectsOfType<EnemyAI>()
+                                     where spawnedEnemy?.enemyType?.enemyName is not null
                                      where !spawnedEnemy.isEnemyDead
                                      where spawnedEnemy.isOutside == !playerControllerB.isInsideFactory
                                      where !ShouldIgnoreEnemy(spawnedEnemy.enemyType.enemyName)
-                                     let distance = Vector3.Distance(playerControllerB.transform.position,
-                                                                     spawnedEnemy.transform.position)
+                                     let distance = Vector3.Distance(playerControllerB.transform.position, spawnedEnemy.transform.position)
                                      where distance <= _minimumWarnDistance.Value
                                      select spawnedEnemy) {
-            _nextEnemyMessage =
-                currentTime + _Random.Next(_minimumMessageCoolDown.Value, _maximumMessageCoolDown.Value);
+            _nextEnemyMessage = currentTime + _Random.Next(_minimumMessageCoolDown.Value, _maximumMessageCoolDown.Value);
 
             Transmitter.SendMessage(GetEnemyName(spawnedEnemy.enemyType.enemyName));
             break;
@@ -86,8 +85,6 @@ public static class EnemyChecker {
         var geniusChance = _Random.Next(1, 101);
         var idiotChance = _Random.Next(1, 101);
         var colorBlindChance = _Random.Next(1, 101);
-
-        AutomaticSignals.Logger.LogFatal("Name: " + enemyName);
 
         return IsIdiotOrDressGirl(geniusChance, enemyName)
             ? GetIdiotName(idiotChance, colorBlindChance)

@@ -13,7 +13,9 @@ public static class Transmitter {
                     .Where(unlockableItem => !unlockableItem.inStorage)
                     .Any(unlockableItem => unlockableItem.unlockableName.ToLower().Contains("translator"));
 
-    public static void SendMessage(string message) {
+    public static void SendMessage(string? message) {
+        if (message is null) return;
+
         var hudManager = HUDManager.Instance;
 
         if (hudManager is null) {
